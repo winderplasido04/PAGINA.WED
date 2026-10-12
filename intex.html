@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PARA TI CHAPARRITA</title>
+  <style>
+    :root {
+      --bg: #f7e5ee;
+      --panel: rgba(255, 242, 246, 0.7);
+      --panel-border: rgba(255,255,255,0.7);
+      --rose: #f85c96;
+      --rose-deep: #d91d5d;
+      --heart: #ef6aa1;
+      --outline: #1c1d1d;
+      --shadow: rgba(105, 54, 75, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.7), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(255, 198, 220, 0.45), transparent 30%),
+        linear-gradient(180deg, #fbeef3 0%, #f4dfe9 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bg-hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 1.8rem;
+      color: rgba(248, 92, 150, 0.2);
+      animation: floatUp linear infinite;
+      opacity: 0.8;
+      filter: blur(0.2px);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) scale(0.8) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.7; }
+      100% { transform: translateY(-18vh) scale(1.25) rotate(24deg); opacity: 0; }
+    }
+
+    .scene {
+      position: relative;
+      z-index: 1;
+      width: min(94vw, 1200px);
+      min-height: min(80vh, 860px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .letter-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .letter-envelope {
+      position: relative;
+      width: min(80vw, 980px);
+      height: 360px;
+      perspective: 1200px;
+      cursor: pointer;
+    }
+
+    .letter-content {
+      position: absolute;
+      inset: 22px 26px 16px;
+      background: linear-gradient(180deg, #fffefc 0%, #fff1f7 100%);
+      border: 1px solid rgba(174, 92, 132, 0.18);
+      border-radius: 20px;
+      box-shadow: 0 18px 35px rgba(117, 64, 85, 0.12);
+      padding: 34px 30px 24px;
+      z-index: 1;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: transform 0.8s ease, opacity 0.8s ease;
+      text-align: center;
+    }
+
+    .letter-box.open .letter-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-content .label {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rose-deep);
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .letter-content h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2rem, 3vw, 3rem);
+      color: #2d1d2a;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.1;
+    }
+
+    .letter-content p {
+      margin: 0 auto;
+      max-width: 500px;
+      font-size: 1rem;
+      line-height: 1.9;
+      color: rgba(43, 33, 39, 0.8);
+    }
+
+    .letter-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #f9d4e4 0%, #f7c0d8 100%);
+      border: 4px solid rgba(22, 19, 21, 0.9);
+      border-radius: 0;
+      box-shadow: 0 18px 40px rgba(132, 70, 94, 0.08);
+      overflow: hidden;
+    }
+
+    .letter-back::before {
+      content: "";
+      position: absolute;
+      inset: 20px 20px 0;
+      border: 1px dashed rgba(22, 19, 21, 0.28);
+      border-bottom: 0;
+      border-radius: 0;
+    }
+
+    .letter-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 58%;
+      background: linear-gradient(135deg, #f4c5d7 0%, #ef9bbc 100%);
+      border: 4px solid rgba(22, 19, 21, 0.9);
+      border-bottom: none;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      z-index: 3;
+      transition: transform 0.9s ease;
+    }
+
+    .letter-box.open .letter-flap {
+      transform: rotateX(180deg);
+    }
+
+    .letter-front {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 100%);
+      border: 4px solid rgba(22, 19, 21, 0.9);
+      z-index: 2;
+      transition: opacity 0.6s ease;
+    }
+
+    .letter-box.open .letter-front {
+      opacity: 0.25;
+    }
+
+    .letter-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .toggle-btn,
+    .next-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f86ea1 0%, #dc245d 100%);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 18px 32px;
+      min-width: 260px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 18px 40px rgba(220, 36, 93, 0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, opacity 0.3s ease;
+    }
+
+    .toggle-btn:hover,
+    .next-link:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 22px 44px rgba(220, 36, 93, 0.34);
+      filter: saturate(1.08);
+    }
+
+    .next-link {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+    }
+
+    .letter-box.open .next-link {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 720px) {
+      .letter-envelope {
+        height: 360px;
+      }
+
+      .letter-content {
+        inset: 18px 18px 14px;
+        padding: 24px 18px 18px;
+      }
+
+      .letter-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .letter-content p {
+        font-size: 0.92rem;
+      }
+
+      .toggle-btn,
+      .next-link {
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        padding: 14px 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-hearts" aria-hidden="true"></div>
+
+  <div class="scene">
+    <div class="letter-box" id="letterBox">
+      <div class="letter-envelope" aria-label="Carta de amor" aria-live="polite">
+        <div class="letter-back"></div>
+        <div class="letter-flap"></div>
+        <div class="letter-front"></div>
+
+        <div class="letter-content">
+          <span class="label">Carta de amor</span>
+          <h1>Para ti, mi amor</h1>
+          <p>
+            En cada momento contigo, he aprendido que el amor más bonito es el que se vive con calma,
+            con ternura y con la certeza de que siempre vale la pena seguir caminando a tu lado.
+          </p>
+        </div>
+      </div>
+
+      <div class="letter-actions">
+        <button class="toggle-btn" id="toggleBtn" type="button">ABRIR CARTA</button>
+        <a class="next-link" href="SEGUNDA CARTA.html" aria-label="Leer más">SEGUIR</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hearts = document.querySelector('.bg-hearts');
+    const symbols = ['❤', '♥', '✨', '❣'];
+
+    for (let i = 0; i < 26; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 9 + 10) + 's';
+      heart.style.animationDelay = (Math.random() * 5) + 's';
+      heart.style.fontSize = (Math.random() * 1.4 + 1.2) + 'rem';
+      hearts.appendChild(heart);
+    }
+
+    const letterBox = document.getElementById('letterBox');
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = letterBox.classList.toggle('open');
+      toggleBtn.textContent = isOpen ? 'CERRAR CARTA' : 'ABRIR CARTA';
+    });
+  </script>
+</body>
+</html>
